@@ -1,10 +1,10 @@
-const { expect } = require('chai');
 const sinon = require('sinon');
+const { expect } = require('chai');
+const { afterEach } = require('mocha');
 
 const connection = require('../../../src/models/database/connection');
 const { productsModel } = require('../../../src/models');
 const { allProducts } = require('./mocks/products.model.mock');
-const { afterEach } = require('mocha');
 
 describe('Unit tests (Model) - Products', function () {
 
