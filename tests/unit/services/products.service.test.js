@@ -5,6 +5,7 @@ const { afterEach } = require('mocha');
 const { productsModel } = require('../../../src/models');
 const { productsService } = require('../../../src/services');
 const { allProducts } = require('../models/mocks/products.model.mock');
+const { createdProduct } = require('../controllers/mocks/products.controller.mock');
 
 describe('Unit tests (Service) - Products', function () {
 
@@ -52,11 +53,13 @@ describe('Unit tests (Service) - Products', function () {
     });
 
     it('3 - Should return the new product', async function () {
-      sinon.stub(productsModel, 'createProduct').resolves(10);
-      const { type, message } = await productsService.createProduct('product');
+      sinon.stub(productsModel, 'createProduct').resolves([{ insertId: 10 }]);
+      sinon.stub(productsModel, 'getProductById').resolves(createdProduct);
+
+      const { type, message } = await productsService.createProduct('Manopla de Thanos');
 
       expect(type).to.equal(null);
-      expect(message).to.deep.equal({ id: 10, name: 'product' });
+      expect(message).to.deep.equal(createdProduct);
     });
   });
 });
