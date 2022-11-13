@@ -9,6 +9,7 @@ chai.use(sinonChai);
 const { productsService } = require('../../../src/services');
 const { productsController } = require('../../../src/controllers');
 const { allProducts } = require('../models/mocks/products.model.mock');
+const { createdProduct } = require('./mocks/products.controller.mock');
 
 const NOT_FOUND = 'Product not found';
 const UNKNOWN_MESSAGE = 'Unknown database \'db\'';
@@ -18,7 +19,6 @@ describe('Unit tests (Controller) - Products', function () {
   afterEach(sinon.restore);
 
   describe('Testing getAll func', function () {
-
     it('1 - Should list all products', async function () {
       sinon
         .stub(productsService, 'getAllProducts')
@@ -87,6 +87,42 @@ describe('Unit tests (Controller) - Products', function () {
 
       expect(res.status).to.have.been.calledWith(404);
       expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
+    });
+  });
+
+  describe('Testing createProduct func', function () {
+    it('1 - Should throw an error if the name isn\'t valid', async function () {
+      sinon
+        .stub(productsService, 'createProduct')
+        .returns({ type: 400, message: '"name" is required' });
+        
+      const res = {}
+      const req = { body: {} };
+      
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+    
+      await productsController.createProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(400);
+      expect(res.json).to.have.been.calledWith({ message: '"name" is required' });
+    });
+
+    it('2 - Should return the new product', async function () {
+      sinon
+        .stub(productsService, 'createProduct')
+        .resolves({ type: null, message: createdProduct });
+      
+      const res = {}
+      const req = { body: { name: 'Manopla de Thanos' } };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await productsController.createProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(201);
+      expect(res.json).to.have.been.calledWith(createdProduct);
     });
   });
 });
