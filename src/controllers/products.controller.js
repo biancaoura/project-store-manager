@@ -23,8 +23,8 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
   const { name } = req.body;
   const { type, message } = await productsService.createProduct(name);
-
-  if (type) return res.status();
+  
+  if (type) return res.status(type).json({ message });
 
   return res.status(HTTP_CREATED).json(message);
 };

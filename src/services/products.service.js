@@ -1,4 +1,5 @@
 const { productsModel } = require('../models');
+const { validateProductName } = require('./validations/products.validation');
 
 const HTTP_NOT_FOUND = 404;
 
@@ -17,6 +18,10 @@ const getProductById = async (productId) => {
 };
 
 const createProduct = async (name) => {
+  const validation = validateProductName(name);
+
+  if (validation.type) return validation;
+
   const newProductId = await productsModel.createProduct(name);
   const newProduct = await productsModel.getProductById(newProductId);
 
