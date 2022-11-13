@@ -13,6 +13,11 @@ const allProducts = [
   },
 ];
 
+const newProduct = {
+  name: 'Manopla do Infinito',
+};
+
 module.exports = {
   allProducts,
+  newProduct,
 };
