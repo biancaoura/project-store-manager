@@ -1,7 +1,6 @@
 const { createProductSchema } = require('./schemas');
 
-const HTTP_BAD_REQUEST = 400;
-const HTTP_UNPROCESSABLE_ENTITY = 422;
+const { HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY } = require('../../utils/httpStatus');
 
 const validateProductName = (name) => {
   const { error } = createProductSchema.validate({ name });
