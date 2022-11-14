@@ -11,11 +11,6 @@ const salesProducts = [
   },
 ];
 
-const invalidProductIdSale = [{
-  productId: 10,
-  quantity: 10,
-}];
-
 const validSale = [
   {
     productId: 1,
@@ -43,7 +38,6 @@ const createdSale = {
 
 module.exports = {
   salesProducts,
-  invalidProductIdSale,
   validSale,
   createdSale,
 };
