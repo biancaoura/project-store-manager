@@ -1,10 +1,10 @@
 const sinon = require('sinon');
 const { expect } = require('chai');
+const { afterEach } = require('mocha');
 
 const connection = require('../../../src/models/database/connection');
 const { salesModel } = require('../../../src/models');
 const { validSale, createdSale, salesProducts } = require('./mocks/sales.model.mock');
-const { afterEach } = require('mocha');
 
 describe('Unit tests (Model) - Sales', function () {
 
