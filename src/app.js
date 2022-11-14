@@ -1,7 +1,7 @@
 const express = require('express');
 require('express-async-errors');
 
-const { productsRouter } = require('./routes');
+const { productsRouter, salesRouter } = require('./routes');
 
 const { errorHandling } = require('./middlewares');
 
@@ -10,6 +10,7 @@ const app = express();
 app.use(express.json());
 
 app.use('/products', productsRouter);
+app.use('/sales', salesRouter);
 
 app.use(errorHandling);
 
