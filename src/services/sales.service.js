@@ -4,9 +4,10 @@ const { doesProductExist } = require('./validations/sales_products.validation');
 
 const createSale = async (sale) => {
   let errorMessage;
+
   sale.map((newSale) => {
     const { type, message } = validateSale(newSale);
-    if (type) return { type, message };
+    if (type) errorMessage = { type, message };
     return false;
   });
 
