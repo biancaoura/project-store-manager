@@ -8,6 +8,8 @@ const { invalidProductIdSale, invalidProductSale, invalidQuantitySale, invalidNe
 const { validSale, createdSale, allSales, salesProducts } = require('../models/mocks/sales.model.mock');
 const { HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY } = require('../../../src/utils/httpStatus');
 
+const NOT_FOUND = 'Sale not found';
+
 describe('Unit tests (Service) - Sales', function () {
 
   afterEach(sinon.restore);
@@ -21,7 +23,7 @@ describe('Unit tests (Service) - Sales', function () {
       expect(message).to.deep.equal(allSales);
     });
 
-    it('2 - Should get matching product when searching by id', async function () {
+    it('2 - Should get matching sale when searching by id', async function () {
       sinon.stub(salesModel, 'getSaleById').resolves(salesProducts);
 
       const { message } = await salesService.getSaleById(1);
@@ -34,7 +36,7 @@ describe('Unit tests (Service) - Sales', function () {
 
       const { message } = await salesService.getSaleById(10);
 
-      expect(message).to.equal('Sale not found');
+      expect(message).to.equal(NOT_FOUND);
     });
   });
 
@@ -67,13 +69,33 @@ describe('Unit tests (Service) - Sales', function () {
       expect(message).to.equal('"quantity" must be greater than or equal to 1');
     });
 
-    it('5 - Should return the created sale', async function () {
+    it('5 - Should return the new sale', async function () {
       sinon.stub(salesModel, 'createProductSale').resolves(createdSale);
       
       const { type, message } = await salesService.createSale(validSale);
 
       expect(type).to.equal(null);
       expect(message).to.deep.equal(createdSale);
+    });
+  });
+
+  describe('Deleting sale', function () {
+    it('1 - Should delete the correct sale', async function () {
+      sinon.stub(salesModel, 'getSaleById').resolves(salesProducts);
+      sinon.stub(salesModel, 'deleteSale').resolves();
+
+      const { type } = await salesService.deleteSale(1);
+
+      expect(type).to.equal(null);
+    });
+
+    it('2 - Should throw an error if sale doesn\'t exist', async function () {
+      sinon.stub(salesModel, 'deleteSale').returns(undefined);
+
+      const { type, message } = await salesService.deleteSale(10);
+
+      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(message).to.equal(NOT_FOUND);
     });
   });
 });
