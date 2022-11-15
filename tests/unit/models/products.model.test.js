@@ -41,4 +41,12 @@ describe('Unit tests (Model) - Products', function () {
 
     expect(result).to.deep.equal(updatedProduct);
   });
+
+  it('5 - Should delete the product with matching id', async function () {
+    sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+
+    const result = await productsModel.deleteProduct(1);
+
+    expect(result).to.equal();
+  });
 });
