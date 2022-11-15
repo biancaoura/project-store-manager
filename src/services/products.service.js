@@ -1,5 +1,9 @@
 const { productsModel } = require('../models');
-const { validateProductName, validateUpdateProduct } = require('./validations/products.validation');
+const {
+  validateProductName,
+  validateUpdateProduct,
+  doesProductExist,
+} = require('./validations/products.validation');
 
 const { HTTP_NOT_FOUND } = require('../utils/httpStatus');
 
@@ -39,9 +43,20 @@ const updateProduct = async (productId, product) => {
   return { type: null, message: updatedProduct };
 };
 
+const deleteProduct = async (productId) => {
+  const { type, message } = await doesProductExist(productId);
+
+  if (type) return { type, message };
+
+  await productsModel.deleteProduct(productId);
+
+  return { type: null };
+};
+
 module.exports = {
   getAllProducts,
   getProductById,
   createProduct,
   updateProduct,
+  deleteProduct,
 };
