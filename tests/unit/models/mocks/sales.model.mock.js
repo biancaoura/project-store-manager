@@ -1,3 +1,24 @@
+const allSales = [
+  {
+    saleId: 1,
+    date: '2022-11-15T01:45:05.000Z',
+    productId: 1,
+    quantity: 5,
+  },
+  {
+    saleId: 1,
+    date: '2022-11-15T01:45:05.000Z',
+    productId: 2,
+    quantity: 10,
+  },
+  {
+    saleId: 2,
+    date: '2022-11-15T01:45:05.000Z',
+    productId: 3,
+    quantity: 15,
+  },
+];
+
 const salesProducts = [
   {
     date: '2021-09-09T04:54:29.000Z',
@@ -37,6 +58,7 @@ const createdSale = {
 };
 
 module.exports = {
+  allSales,
   salesProducts,
   validSale,
   createdSale,

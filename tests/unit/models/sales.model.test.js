@@ -4,7 +4,7 @@ const { afterEach } = require('mocha');
 
 const connection = require('../../../src/models/database/connection');
 const { salesModel } = require('../../../src/models');
-const { validSale, createdSale, salesProducts } = require('./mocks/sales.model.mock');
+const { validSale, createdSale, salesProducts, allSales } = require('./mocks/sales.model.mock');
 
 describe('Unit tests (Model) - Sales', function () {
 
@@ -24,5 +24,13 @@ describe('Unit tests (Model) - Sales', function () {
     const result = await salesModel.getSaleById(1);
 
     expect(result).to.deep.equal(salesProducts);
+  });
+
+  it('3 - Should list all sales', async function () {
+    sinon.stub(connection, 'execute').resolves([allSales]);
+    
+    const result = await salesModel.getAllSales();
+
+    expect(result).to.deep.equal(allSales);
   });
 });
