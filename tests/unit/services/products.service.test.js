@@ -100,4 +100,23 @@ describe('Unit tests (Service) - Products', function () {
       expect(message).to.deep.equal(updatedProduct);
     });
   });
+
+  describe('Deleting products', function () {
+    it('1 - Should delete the correct product', async function () {
+      sinon.stub(productsModel, 'deleteProduct').resolves();
+
+      const { type } = await productsService.deleteProduct(1);
+
+      expect(type).to.equal(null);
+    });
+
+    it('2 - Should throw an error if product doesn\'t exist', async function () {
+      sinon.stub(productsModel, 'deleteProduct').returns(undefined);
+
+      const { type, message } = await productsService.deleteProduct(10);
+
+      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(message).to.equal(NOT_FOUND);
+    });
+  });
 });
