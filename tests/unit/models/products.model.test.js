@@ -4,7 +4,7 @@ const { afterEach } = require('mocha');
 
 const connection = require('../../../src/models/database/connection');
 const { productsModel } = require('../../../src/models');
-const { allProducts, newProduct } = require('./mocks/products.model.mock');
+const { allProducts, newProduct, newName, updatedProduct } = require('./mocks/products.model.mock');
 
 describe('Unit tests (Model) - Products', function () {
 
@@ -32,5 +32,13 @@ describe('Unit tests (Model) - Products', function () {
     const result = await productsModel.createProduct(newProduct);
 
     expect(result).to.equal(10);
+  });
+
+  it('4 - Should change the product name and return the updated info', async function () {
+    sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+
+    const result = await productsModel.updateProduct(1, newName);
+
+    expect(result).to.deep.equal(updatedProduct);
   });
 });

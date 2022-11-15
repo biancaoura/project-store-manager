@@ -17,7 +17,16 @@ const newProduct = {
   name: 'Manopla do Infinito',
 };
 
+const newName = 'Cetro do Loki';
+
+const updatedProduct = {
+  id: 1,
+  name: newName,
+}
+
 module.exports = {
   allProducts,
   newProduct,
+  newName,
+  updatedProduct,
 };
