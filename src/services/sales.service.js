@@ -1,5 +1,9 @@
 const { salesModel } = require('../models');
-const { validateSale, validateSaleId } = require('./validations/sales.validation');
+const {
+  validateSaleId,
+  validateSale,
+  validateSaleUpdate,
+} = require('./validations/sales.validation');
 const { doesProductExist } = require('./validations/sales_products.validation');
 
 const getAllSales = async () => {
@@ -17,14 +21,7 @@ const getSaleById = async (saleId) => {
 };
 
 const createSale = async (sale) => {
-  let errorMessage;
-
-  sale.map((newSale) => {
-    const { type, message } = validateSale(newSale);
-    if (type) errorMessage = { type, message };
-    return false;
-  });
-
+  const errorMessage = validateSale(sale);
   if (errorMessage) return errorMessage;
 
   const productValidation = await doesProductExist(sale);
@@ -33,6 +30,15 @@ const createSale = async (sale) => {
   const newSale = await salesModel.createProductSale(sale);
 
   return { type: null, message: newSale };
+};
+
+const updateSale = async (saleId, sale) => {
+  const { type, message } = await validateSaleUpdate(saleId, sale);
+  if (type) return { type, message };
+
+  const updatedSale = await salesModel.updateSale(saleId, sale);
+
+  return { type: null, message: updatedSale };
 };
 
 const deleteSale = async (saleId) => {
@@ -49,5 +55,6 @@ module.exports = {
   getAllSales,
   getSaleById,
   createSale,
+  updateSale,
   deleteSale,
 };
