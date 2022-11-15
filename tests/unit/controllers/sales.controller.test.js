@@ -9,12 +9,87 @@ chai.use(sinonChai);
 const { salesService } = require('../../../src/services');
 const { salesController } = require('../../../src/controllers');
 const { invalidProductSale } = require('../services/mocks/sales.service.mock');
-const { createdSale, validSale } = require('../models/mocks/sales.model.mock');
-const { HTTP_BAD_REQUEST, HTTP_CREATED } = require('../../../src/utils/httpStatus');
+const { createdSale, validSale, allSales, salesProducts } = require('../models/mocks/sales.model.mock');
+const { HTTP_BAD_REQUEST, HTTP_CREATED, HTTP_OK_STATUS, HTTP_NOT_FOUND, HTTP_INTERNAL_SERVER_ERROR } = require('../../../src/utils/httpStatus');
+
+const NOT_FOUND = 'Sale not found';
+const UNKNOWN_MESSAGE = 'Unknown database \'db\'';
 
 describe('Unit tests (Controller) - Sales', function () {
 
   afterEach(sinon.restore);
+
+  describe('Testing getAll func', function () {
+    it('1 - Should list all sales', async function () {
+      sinon
+        .stub(salesService, 'getAllSales')
+        .returns({ type: null, message: allSales });
+      
+      const res = {};
+      const req = {};
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await salesController.getAllSales(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.json).to.have.been.calledWith(allSales);
+    });
+
+    it('2 - Should return an error message if there\'s a server error', async function () {
+      sinon
+        .stub(salesService, 'getAllSales')
+        .returns({ type: HTTP_INTERNAL_SERVER_ERROR, message: UNKNOWN_MESSAGE });
+
+      const res = {};
+      const req = {};
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await salesController.getAllSales(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_INTERNAL_SERVER_ERROR);
+      expect(res.json).to.have.been.calledWith({ message: UNKNOWN_MESSAGE })
+    });
+  });
+
+  describe('Testing getById func', function () {
+    it('1 - Should get matching sale when searching by id', async function () {
+      sinon
+        .stub(salesService, 'getSaleById')
+        .returns({ type: null, message: salesProducts });
+      
+      const res = {};
+      const req = { params: { id: 1 } };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await salesController.getSaleById(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.json).to.have.been.calledWith(salesProducts);
+    });
+
+    it('2 - Should return status 404 if id is not found', async function () {
+      sinon
+        .stub(salesService, 'getSaleById')
+        .returns({ type: HTTP_NOT_FOUND, message: NOT_FOUND });
+      
+      const res = {};
+      const req = { params: { id: 10 } };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await salesController.getSaleById(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
+      expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
+    });
+  });
 
   describe('Testing createSale func', function () {
     it('1 - Should throw an error if no product id is given', async function () {
