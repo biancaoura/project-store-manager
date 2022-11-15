@@ -10,6 +10,7 @@ const { productsService } = require('../../../src/services');
 const { productsController } = require('../../../src/controllers');
 const { allProducts } = require('../models/mocks/products.model.mock');
 const { createdProduct } = require('./mocks/products.controller.mock');
+const { HTTP_OK_STATUS, HTTP_INTERNAL_SERVER_ERROR, HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_CREATED } = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Product not found';
 const UNKNOWN_MESSAGE = 'Unknown database \'db\'';
@@ -32,14 +33,14 @@ describe('Unit tests (Controller) - Products', function () {
       
       await productsController.getAllProducts(req, res);
       
-      expect(res.status).to.have.been.calledWith(200);
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
       expect(res.json).to.have.been.calledWith(allProducts);
     });
 
     it('2 - Should return an error message if there\'s a server error', async function () {
       sinon
         .stub(productsService, 'getAllProducts')
-        .returns({ type: 500, message: UNKNOWN_MESSAGE });
+        .returns({ type: HTTP_INTERNAL_SERVER_ERROR, message: UNKNOWN_MESSAGE });
 
       const res = {};
       const req = {};
@@ -49,7 +50,7 @@ describe('Unit tests (Controller) - Products', function () {
 
       await productsController.getAllProducts(req, res);
 
-      expect(res.status).to.have.been.calledWith(500);
+      expect(res.status).to.have.been.calledWith(HTTP_INTERNAL_SERVER_ERROR);
       expect(res.json).to.have.been.calledWith({ message: UNKNOWN_MESSAGE })
     });
   });
@@ -68,14 +69,14 @@ describe('Unit tests (Controller) - Products', function () {
 
       await productsController.getProductById(req, res);
 
-      expect(res.status).to.have.been.calledWith(200);
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
       expect(res.json).to.have.been.calledWith(allProducts[0]);
     });
 
     it('2 - Should return status 404 if id is not found', async function () {
       sinon
         .stub(productsService, 'getProductById')
-        .returns({ type: 404, message: NOT_FOUND });
+        .returns({ type: HTTP_NOT_FOUND, message: NOT_FOUND });
 
       const res = {};
       const req = { params: { id: 10 } };
@@ -85,7 +86,7 @@ describe('Unit tests (Controller) - Products', function () {
 
       await productsController.getProductById(req, res);
 
-      expect(res.status).to.have.been.calledWith(404);
+      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
       expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
     });
   });
@@ -94,7 +95,7 @@ describe('Unit tests (Controller) - Products', function () {
     it('1 - Should throw an error if the name isn\'t valid', async function () {
       sinon
         .stub(productsService, 'createProduct')
-        .returns({ type: 400, message: '"name" is required' });
+        .returns({ type: HTTP_BAD_REQUEST, message: '"name" is required' });
         
       const res = {}
       const req = { body: {} };
@@ -104,7 +105,7 @@ describe('Unit tests (Controller) - Products', function () {
     
       await productsController.createProduct(req, res);
 
-      expect(res.status).to.have.been.calledWith(400);
+      expect(res.status).to.have.been.calledWith(HTTP_BAD_REQUEST);
       expect(res.json).to.have.been.calledWith({ message: '"name" is required' });
     });
 
@@ -121,7 +122,7 @@ describe('Unit tests (Controller) - Products', function () {
 
       await productsController.createProduct(req, res);
 
-      expect(res.status).to.have.been.calledWith(201);
+      expect(res.status).to.have.been.calledWith(HTTP_CREATED);
       expect(res.json).to.have.been.calledWith(createdProduct);
     });
   });

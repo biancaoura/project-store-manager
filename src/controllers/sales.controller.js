@@ -1,6 +1,6 @@
 const { salesService } = require('../services');
 
-const HTTP_CREATED = 201;
+const { HTTP_CREATED } = require('../utils/httpStatus');
 
 const createSale = async (req, res) => {
   const { type, message } = await salesService.createSale(req.body);

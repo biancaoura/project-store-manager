@@ -6,6 +6,7 @@ const { productsModel } = require('../../../src/models');
 const { productsService } = require('../../../src/services');
 const { allProducts } = require('../models/mocks/products.model.mock');
 const { createdProduct } = require('../controllers/mocks/products.controller.mock');
+const { HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY } = require('../../../src/utils/httpStatus');
 
 describe('Unit tests (Service) - Products', function () {
 
@@ -41,14 +42,14 @@ describe('Unit tests (Service) - Products', function () {
     it('1 - Should throw an error if no name is given', async function () {
       const { type, message } = await productsService.createProduct();
 
-      expect(type).to.equal(400);
+      expect(type).to.equal(HTTP_BAD_REQUEST);
       expect(message).to.equal('"name" is required');
     });
 
     it('2 - Should throw an error if the name has less than 5 characters', async function () {
       const { type, message } = await productsService.createProduct('a');
 
-      expect(type).to.equal(422);
+      expect(type).to.equal(HTTP_UNPROCESSABLE_ENTITY);
       expect(message).to.equal('"name" length must be at least 5 characters long');
     });
 

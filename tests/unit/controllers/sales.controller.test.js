@@ -10,6 +10,7 @@ const { salesService } = require('../../../src/services');
 const { salesController } = require('../../../src/controllers');
 const { invalidProductSale } = require('../services/mocks/sales.service.mock');
 const { createdSale, validSale } = require('../models/mocks/sales.model.mock');
+const { HTTP_BAD_REQUEST, HTTP_CREATED } = require('../../../src/utils/httpStatus');
 
 describe('Unit tests (Controller) - Sales', function () {
 
@@ -19,7 +20,7 @@ describe('Unit tests (Controller) - Sales', function () {
     it('1 - Should throw an error if no product id is given', async function () {
       sinon
         .stub(salesService, 'createSale')
-        .returns({ type: 400, message: '"productId" is required' });
+        .returns({ type: HTTP_BAD_REQUEST, message: '"productId" is required' });
       
       const res = {};
       const req = { body: invalidProductSale };
@@ -29,7 +30,7 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.createSale(req, res);
 
-      expect(res.status).to.have.been.calledWith(400);
+      expect(res.status).to.have.been.calledWith(HTTP_BAD_REQUEST);
       expect(res.json).to.have.been.calledWith({ message: '"productId" is required' });
     });
 
@@ -46,7 +47,7 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.createSale(req, res);
 
-      expect(res.status).to.have.been.calledWith(201);
+      expect(res.status).to.have.been.calledWith(HTTP_CREATED);
       expect(res.json).to.have.been.calledWith(createdSale);
     });
   });

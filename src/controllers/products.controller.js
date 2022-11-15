@@ -1,7 +1,6 @@
 const { productsService } = require('../services');
 
-const HTTP_OK_STATUS = 200;
-const HTTP_CREATED = 201;
+const { HTTP_OK_STATUS, HTTP_CREATED } = require('../utils/httpStatus');
 
 const getAllProducts = async (_req, res) => {
   const { type, message } = await productsService.getAllProducts();
