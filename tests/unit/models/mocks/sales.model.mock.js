@@ -43,6 +43,20 @@ const validSale = [
   },
 ];
 
+const updatedSale = {
+  saleId: 1,
+  itemsUpdated: [
+    {
+      productId: 1,
+      quantity: 1,
+    },
+    {
+      productId: 2,
+      quantity: 5,
+    },
+  ],
+};
+
 const createdSale = {
   id: 10,
   itemsSold: [
@@ -61,5 +75,6 @@ module.exports = {
   allSales,
   salesProducts,
   validSale,
+  updatedSale,
   createdSale,
 };

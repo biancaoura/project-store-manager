@@ -4,7 +4,7 @@ const { afterEach } = require('mocha');
 
 const connection = require('../../../src/models/database/connection');
 const { salesModel } = require('../../../src/models');
-const { validSale, createdSale, salesProducts, allSales } = require('./mocks/sales.model.mock');
+const { validSale, createdSale, salesProducts, allSales, updatedSale } = require('./mocks/sales.model.mock');
 
 describe('Unit tests (Model) - Sales', function () {
 
@@ -34,7 +34,15 @@ describe('Unit tests (Model) - Sales', function () {
     expect(result).to.deep.equal(createdSale);
   });
 
-  it('4 - Should delete the sale with matching id', async function () {
+  it('4 - Should update the sale with matching id', async function () {
+    sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
+
+    const result = await salesModel.updateSale(1, validSale);
+
+    expect(result).to.deep.equal(updatedSale);
+  });
+
+  it('5 - Should delete the sale with matching id', async function () {
     sinon.stub(connection, 'execute').resolves([{ affectedRows: 1 }]);
 
     const result = await salesModel.deleteSale(1);
