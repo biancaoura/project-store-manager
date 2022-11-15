@@ -24,9 +24,17 @@ const updatedProduct = {
   name: newName,
 }
 
+const queryInput = [
+  {
+    id: 1,
+    name: 'Martelo de Thor',
+  },
+];
+
 module.exports = {
   allProducts,
   newProduct,
   newName,
   updatedProduct,
+  queryInput,
 };

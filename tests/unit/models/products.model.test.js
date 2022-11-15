@@ -4,7 +4,7 @@ const { afterEach } = require('mocha');
 
 const connection = require('../../../src/models/database/connection');
 const { productsModel } = require('../../../src/models');
-const { allProducts, newProduct, newName, updatedProduct } = require('./mocks/products.model.mock');
+const { allProducts, newProduct, newName, updatedProduct, queryInput } = require('./mocks/products.model.mock');
 
 describe('Unit tests (Model) - Products', function () {
 
@@ -48,5 +48,21 @@ describe('Unit tests (Model) - Products', function () {
     const result = await productsModel.deleteProduct(1);
 
     expect(result).to.equal();
+  });
+
+  it('6 - Should list all products when searching with no query', async function () {
+    sinon.stub(connection, 'execute').resolves([allProducts]);
+
+    const result = await productsModel.getProductByName();
+
+    expect(result).to.equal(allProducts);
+  });
+
+  it('7 - Should list the matching products when searching by query', async function () {
+    sinon.stub(connection, 'execute').resolves([queryInput]);
+
+    const result = await productsModel.getProductByName('mar');
+
+    expect(result).to.equal(queryInput);
   });
 });
