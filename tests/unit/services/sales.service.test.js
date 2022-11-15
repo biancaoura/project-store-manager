@@ -4,8 +4,8 @@ const { afterEach } = require('mocha');
 
 const { salesModel } = require('../../../src/models');
 const { salesService } = require('../../../src/services');
-const { invalidProductIdSale, invalidProductSale, invalidQuantitySale, invalidNegativeQuantity } = require('./mocks/sales.service.mock');
-const { validSale, createdSale, allSales, salesProducts } = require('../models/mocks/sales.model.mock');
+const { invalidProductIdSale, invalidProductSale, invalidQuantitySale, invalidNegativeQuantity, invalidSaleId } = require('./mocks/sales.service.mock');
+const { validSale, createdSale, allSales, salesProducts, updatedSale } = require('../models/mocks/sales.model.mock');
 const { HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY } = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Sale not found';
@@ -40,7 +40,7 @@ describe('Unit tests (Service) - Sales', function () {
     });
   });
 
-  describe('Creating a new sale', function () {
+  describe('Creating sales', function () {
     it('1 - Should throw an error if product id doesn\'t exist', async function () {
       const { type, message } = await salesService.createSale(invalidProductIdSale);
 
@@ -79,7 +79,41 @@ describe('Unit tests (Service) - Sales', function () {
     });
   });
 
-  describe('Deleting sale', function () {
+  describe('Updating sales', function () {
+    it('1 - Should throw an error if sale id is invalid', async function () {
+      sinon.stub(salesModel, 'updateSale').returns(undefined);
+
+      const { type, message } = await salesService.updateSale(invalidSaleId, validSale);
+
+      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(message).to.deep.equal(NOT_FOUND);
+    });
+    
+    it('2 - Should throw an error if product id doesn\'t exist', async function () {
+      const { type, message } = await salesService.updateSale(1, invalidProductIdSale);
+
+      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(message).to.deep.equal('Product not found');
+    });
+
+    it('3 - Should throw an error if no quantity is specified', async function () {
+      const { type, message } = await salesService.updateSale(1, invalidQuantitySale);
+
+      expect(type).to.equal(HTTP_BAD_REQUEST);
+      expect(message).to.deep.equal('"quantity" is required');
+    });
+
+    it('4 - Should return the updated sale', async function () {
+      sinon.stub(salesModel, 'updateSale').returns(updatedSale);
+
+      const { type, message } = await salesService.updateSale(1, validSale);
+
+      expect(type).to.equal(null);
+      expect(message).to.deep.equal(updatedSale);
+    });
+  });
+
+  describe('Deleting sales', function () {
     it('1 - Should delete the correct sale', async function () {
       sinon.stub(salesModel, 'getSaleById').resolves(salesProducts);
       sinon.stub(salesModel, 'deleteSale').resolves();

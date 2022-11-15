@@ -16,9 +16,12 @@ const invalidNegativeQuantity = [{
   quantity: -1,
 }];
 
+const invalidSaleId = 10;
+
 module.exports = {
   invalidProductSale,
   invalidProductIdSale,
   invalidQuantitySale,
   invalidNegativeQuantity,
+  invalidSaleId,
 };
