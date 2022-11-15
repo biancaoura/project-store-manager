@@ -9,7 +9,12 @@ const createSaleSchema = Joi.object({
   quantity: Joi.number().integer().min(1).required(),
 });
 
+const updateProductSchema = Joi.object({
+  name: Joi.string().min(5).required(),
+});
+
 module.exports = {
   createProductSchema,
   createSaleSchema,
+  updateProductSchema,
 };

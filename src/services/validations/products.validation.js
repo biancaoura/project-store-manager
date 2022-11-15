@@ -1,6 +1,9 @@
-const { createProductSchema } = require('./schemas');
+const { createProductSchema, updateProductSchema } = require('./schemas');
 
-const { HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY } = require('../../utils/httpStatus');
+const {
+  HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY, HTTP_NOT_FOUND,
+} = require('../../utils/httpStatus');
+const { productsModel } = require('../../models');
 
 const validateProductName = (name) => {
   const { error } = createProductSchema.validate({ name });
@@ -11,6 +14,26 @@ const validateProductName = (name) => {
   return { type: null, message: '' };
 };
 
+const validateUpdateProduct = async (productId, product) => {
+  const { error } = updateProductSchema.validate(product);
+
+  if (error) {
+    return {
+      type: error.message.includes('required')
+        ? HTTP_BAD_REQUEST
+        : HTTP_UNPROCESSABLE_ENTITY,
+      message: error.message,
+    }; 
+}
+
+  const validation = await productsModel.getProductById(productId);
+
+  if (!validation) return { type: HTTP_NOT_FOUND, message: 'Product not found' };
+
+  return { type: null, message: '' };
+};
+
 module.exports = {
   validateProductName,
+  validateUpdateProduct,
 };
