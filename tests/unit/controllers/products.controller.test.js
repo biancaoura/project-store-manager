@@ -10,7 +10,7 @@ const { productsService } = require('../../../src/services');
 const { productsController } = require('../../../src/controllers');
 const { allProducts, newProduct, updatedProduct } = require('../models/mocks/products.model.mock');
 const { createdProduct } = require('./mocks/products.controller.mock');
-const { HTTP_OK_STATUS, HTTP_INTERNAL_SERVER_ERROR, HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_CREATED } = require('../../../src/utils/httpStatus');
+const { HTTP_OK_STATUS, HTTP_INTERNAL_SERVER_ERROR, HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_CREATED, HTTP_NO_CONTENT } = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Product not found';
 const UNKNOWN_MESSAGE = 'Unknown database \'db\'';
@@ -163,6 +163,42 @@ describe('Unit tests (Controller) - Products', function () {
       res.json = sinon.stub().returns();
 
       await productsController.updateProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
+      expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
+    });
+  });
+
+  describe('Testing delete func', function () {
+    it('1 - Should delete the correct product', async function () {
+      sinon
+        .stub(productsService, 'deleteProduct')
+        .resolves({ type: null });
+      
+        const res = {};
+        const req = { params: { id: 1 } };
+
+      res.status = sinon.stub().returns(res);
+      res.end = sinon.stub().returns();
+
+      await productsController.deleteProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NO_CONTENT);
+      expect(res.end).to.have.been.calledWith();
+    });
+
+    it('2 - Should throw an error if product doesn\'t exist', async function () {
+      sinon
+        .stub(productsService, 'deleteProduct')
+        .returns({ type: HTTP_NOT_FOUND, message: NOT_FOUND });
+
+      const res = {};
+      const req = { params: { id: 10 } };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await productsController.deleteProduct(req, res);
 
       expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
       expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
