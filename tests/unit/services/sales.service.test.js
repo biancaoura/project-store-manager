@@ -5,12 +5,38 @@ const { afterEach } = require('mocha');
 const { salesModel } = require('../../../src/models');
 const { salesService } = require('../../../src/services');
 const { invalidProductIdSale, invalidProductSale, invalidQuantitySale, invalidNegativeQuantity } = require('./mocks/sales.service.mock');
-const { validSale, createdSale } = require('../models/mocks/sales.model.mock');
+const { validSale, createdSale, allSales, salesProducts } = require('../models/mocks/sales.model.mock');
 const { HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY } = require('../../../src/utils/httpStatus');
 
 describe('Unit tests (Service) - Sales', function () {
 
   afterEach(sinon.restore);
+
+  describe('Listing sales', function () {
+    it('1 - Should list all sales', async function () {
+      sinon.stub(salesModel, 'getAllSales').resolves(allSales);
+
+      const { message } = await salesService.getAllSales();
+
+      expect(message).to.deep.equal(allSales);
+    });
+
+    it('2 - Should get matching product when searching by id', async function () {
+      sinon.stub(salesModel, 'getSaleById').resolves(salesProducts);
+
+      const { message } = await salesService.getSaleById(1);
+
+      expect(message).to.deep.equal(salesProducts);
+    });
+
+    it('3 - Should return an error message if id is not found', async function () {
+      sinon.stub(salesModel, 'getSaleById').returns([]);
+
+      const { message } = await salesService.getSaleById(10);
+
+      expect(message).to.equal('Sale not found');
+    });
+  });
 
   describe('Creating a new sale', function () {
     it('1 - Should throw an error if product id doesn\'t exist', async function () {
