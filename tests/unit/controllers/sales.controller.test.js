@@ -9,7 +9,7 @@ chai.use(sinonChai);
 const { salesService } = require('../../../src/services');
 const { salesController } = require('../../../src/controllers');
 const { invalidProductSale } = require('../services/mocks/sales.service.mock');
-const { createdSale, validSale, allSales, salesProducts } = require('../models/mocks/sales.model.mock');
+const { createdSale, validSale, allSales, salesProducts, updatedSale } = require('../models/mocks/sales.model.mock');
 const { HTTP_BAD_REQUEST, HTTP_CREATED, HTTP_OK_STATUS, HTTP_NOT_FOUND, HTTP_INTERNAL_SERVER_ERROR, HTTP_NO_CONTENT } = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Sale not found';
@@ -124,6 +124,48 @@ describe('Unit tests (Controller) - Sales', function () {
 
       expect(res.status).to.have.been.calledWith(HTTP_BAD_REQUEST);
       expect(res.json).to.have.been.calledWith({ message: '"productId" is required' });
+    });
+  });
+
+  describe('Testing update func', function () {
+    it('1 - Should return the updated sale', async function () {
+      sinon
+        .stub(salesService, 'updateSale')
+        .resolves({ type: null, message: updatedSale });
+      
+      const res = {};
+      const req = {
+        params: { id: 1 },
+        body: validSale,
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await salesController.updateSale(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.json).to.have.been.calledWith(updatedSale);
+    });
+
+    it('2 - Should throw an error if sale id doesn\'t exist', async function () {
+      sinon
+        .stub(salesService, 'updateSale')
+        .returns({ type: HTTP_NOT_FOUND, message: NOT_FOUND });
+
+      const res = {};
+      const req = {
+        params: { id: 10 },
+        body: validSale,
+      };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await salesController.updateSale(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
+      expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
     });
   });
 
