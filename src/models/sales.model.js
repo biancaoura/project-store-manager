@@ -6,7 +6,7 @@ const getAllSales = async () => {
     `SELECT s.id as sale_id, s.date, sp.product_id, sp.quantity
       FROM StoreManager.sales AS s
       INNER JOIN StoreManager.sales_products AS sp
-        ON s.id = sp.sale_id;`, 
+        ON s.id = sp.sale_id`, 
   );
 
   return camelize(sales);
@@ -14,12 +14,15 @@ const getAllSales = async () => {
 
 const getSaleById = async (saleId) => {
   const [sale] = await connection.execute(
-    `SELECT * FROM StoreManager.sales_products
-      WHERE sale_id = ?`,
+    `SELECT s.date, sp.product_id, sp.quantity
+      FROM StoreManager.sales AS s
+      INNER JOIN StoreManager.sales_products AS sp
+        ON s.id = sp.sale_id
+      WHERE s.id = ?`,
     [saleId],
   );
 
-  return sale;
+  return camelize(sale);
 };
 
 const createLastSaleDate = async () => {

@@ -1,5 +1,9 @@
 const { createSaleSchema } = require('./schemas');
-const { HTTP_UNPROCESSABLE_ENTITY, HTTP_BAD_REQUEST } = require('../../utils/httpStatus');
+const { salesModel } = require('../../models');
+const {
+  HTTP_UNPROCESSABLE_ENTITY,
+  HTTP_BAD_REQUEST, HTTP_NOT_FOUND,
+} = require('../../utils/httpStatus');
 
 const validateSale = ({ productId, quantity }) => {
   const { error } = createSaleSchema.validate({ productId, quantity });
@@ -16,6 +20,15 @@ const validateSale = ({ productId, quantity }) => {
   return { type: null, message: '' };
 };
 
+const validateSaleId = async (saleId) => {
+  const isSaleValid = await salesModel.getSaleById(saleId);
+
+  if (isSaleValid.length < 1) return { type: HTTP_NOT_FOUND, message: 'Sale not found' };
+
+  return { type: null, message: isSaleValid };
+};
+
 module.exports = {
   validateSale,
+  validateSaleId,
 };
