@@ -2,6 +2,12 @@ const { salesModel } = require('../models');
 const { validateSale } = require('./validations/sales.validation');
 const { doesProductExist } = require('./validations/sales_products.validation');
 
+const getAllSales = async () => {
+  const allSales = await salesModel.getAllSales();
+
+  return { type: null, message: allSales };
+};
+
 const createSale = async (sale) => {
   let errorMessage;
 
@@ -22,5 +28,6 @@ const createSale = async (sale) => {
 };
 
 module.exports = {
+  getAllSales,
   createSale,
 };
