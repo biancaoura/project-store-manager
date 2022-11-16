@@ -1,11 +1,10 @@
-const newProduct = 'Manopla de Thanos';
+const { newName } = require('../../models/mocks/products.model.mock');
 
-const validNewName = { name: 'Cetro de Loki' };
+const validNewName = { name: newName };
 
 const invalidNameLen = { name: 'abc' };
 
 module.exports = {
-  newProduct,
   validNewName,
   invalidNameLen,
 };

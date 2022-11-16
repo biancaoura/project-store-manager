@@ -13,8 +13,10 @@ const allProducts = [
   },
 ];
 
-const newProduct = {
-  name: 'Manopla do Infinito',
+const newProduct = 'Manopla do Infinito';
+
+const createdProduct = {
+  name: newProduct,
 };
 
 const newName = 'Cetro do Loki';
@@ -24,7 +26,9 @@ const updatedProduct = {
   name: newName,
 }
 
-const queryInput = [
+const queryInput = 'mar';
+
+const queryResult = [
   {
     id: 1,
     name: 'Martelo de Thor',
@@ -34,7 +38,9 @@ const queryInput = [
 module.exports = {
   allProducts,
   newProduct,
+  createdProduct,
   newName,
   updatedProduct,
   queryInput,
+  queryResult,
 };

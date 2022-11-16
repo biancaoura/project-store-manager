@@ -8,12 +8,13 @@ chai.use(sinonChai);
 
 const { productsService } = require('../../../src/services');
 const { productsController } = require('../../../src/controllers');
-const { allProducts, newProduct, updatedProduct, queryInput } = require('../models/mocks/products.model.mock');
-const { createdProduct } = require('./mocks/products.controller.mock');
+const { allProducts, createdProduct, updatedProduct, queryResult, queryInput } = require('../models/mocks/products.model.mock');
+const { createdProductWithId } = require('./mocks/products.controller.mock');
 const { HTTP_OK_STATUS, HTTP_INTERNAL_SERVER_ERROR, HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_CREATED, HTTP_NO_CONTENT } = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Product not found';
 const UNKNOWN_MESSAGE = 'Unknown database \'db\'';
+const NAME_REQUIRED = '"name" is required';
 
 describe('Unit tests (Controller) - Products', function () {
   
@@ -112,10 +113,10 @@ describe('Unit tests (Controller) - Products', function () {
     it('2 - Should list the matching products when searching by query', async function () {
       sinon
         .stub(productsService, 'getProductByName')
-        .resolves({ type: null, message: queryInput });
+        .resolves({ type: null, message: queryResult });
 
       const res = {};
-      const req = { query: { q: 'mar' } };
+      const req = { query: { q: queryInput } };
 
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
@@ -123,7 +124,7 @@ describe('Unit tests (Controller) - Products', function () {
       await productsController.getProductByName(req, res);
 
       expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
-      expect(res.json).to.have.been.calledWith(queryInput);
+      expect(res.json).to.have.been.calledWith(queryResult);
     });
 
     it('3 - Should return an error message if no product is found', async function () {
@@ -132,7 +133,7 @@ describe('Unit tests (Controller) - Products', function () {
         .returns({ type: HTTP_INTERNAL_SERVER_ERROR, message: UNKNOWN_MESSAGE });
 
       const res = {};
-      const req = { query: { q: 'mar' } };
+      const req = { query: { q: queryInput } };
 
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
@@ -148,10 +149,10 @@ describe('Unit tests (Controller) - Products', function () {
     it('1 - Should return the new product', async function () {
       sinon
         .stub(productsService, 'createProduct')
-        .resolves({ type: null, message: createdProduct });
+        .resolves({ type: null, message: createdProductWithId });
       
       const res = {}
-      const req = { body: newProduct };
+      const req = { body: createdProduct };
 
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
@@ -159,13 +160,13 @@ describe('Unit tests (Controller) - Products', function () {
       await productsController.createProduct(req, res);
 
       expect(res.status).to.have.been.calledWith(HTTP_CREATED);
-      expect(res.json).to.have.been.calledWith(createdProduct);
+      expect(res.json).to.have.been.calledWith(createdProductWithId);
     });
 
     it('2 - Should throw an error if the name isn\'t valid', async function () {
       sinon
         .stub(productsService, 'createProduct')
-        .returns({ type: HTTP_BAD_REQUEST, message: '"name" is required' });
+        .returns({ type: HTTP_BAD_REQUEST, message: NAME_REQUIRED });
 
       const res = {}
       const req = { body: {} };
@@ -176,7 +177,7 @@ describe('Unit tests (Controller) - Products', function () {
       await productsController.createProduct(req, res);
 
       expect(res.status).to.have.been.calledWith(HTTP_BAD_REQUEST);
-      expect(res.json).to.have.been.calledWith({ message: '"name" is required' });
+      expect(res.json).to.have.been.calledWith({ message: NAME_REQUIRED });
     });
   });
 
@@ -189,7 +190,7 @@ describe('Unit tests (Controller) - Products', function () {
       const res = {};
       const req = {
         params: { id: 1 },
-        body: newProduct,
+        body: createdProduct,
       };
 
       res.status = sinon.stub().returns(res);
@@ -209,7 +210,7 @@ describe('Unit tests (Controller) - Products', function () {
       const res = {};
       const req = {
         params: { id: 10 },
-        body: newProduct,
+        body: createdProduct,
       };
 
       res.status = sinon.stub().returns(res);

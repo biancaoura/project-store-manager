@@ -4,12 +4,14 @@ const { afterEach } = require('mocha');
 
 const { productsModel } = require('../../../src/models');
 const { productsService } = require('../../../src/services');
-const { allProducts, updatedProduct, queryInput } = require('../models/mocks/products.model.mock');
-const { validNewName, invalidNameLen, newProduct } = require('./mocks/products.service.mock');
-const { createdProduct } = require('../controllers/mocks/products.controller.mock');
-const { HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY, HTTP_NOT_FOUND, HTTP_OK_STATUS } = require('../../../src/utils/httpStatus');
+const { allProducts, updatedProduct, queryResult, newProduct, queryInput } = require('../models/mocks/products.model.mock');
+const { validNewName, invalidNameLen } = require('./mocks/products.service.mock');
+const { createdProductWithId } = require('../controllers/mocks/products.controller.mock');
+const { HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY, HTTP_NOT_FOUND } = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Product not found';
+const NAME_REQUIRED = '"name" is required';
+const NAME_LEN_REQUIRED = '"name" length must be at least 5 characters long';
 
 describe('Unit tests (Service) - Products', function () {
 
@@ -46,24 +48,24 @@ describe('Unit tests (Service) - Products', function () {
       const { type, message } = await productsService.createProduct();
 
       expect(type).to.equal(HTTP_BAD_REQUEST);
-      expect(message).to.equal('"name" is required');
+      expect(message).to.equal(NAME_REQUIRED);
     });
 
     it('2 - Should throw an error if the name has less than 5 characters', async function () {
       const { type, message } = await productsService.createProduct('a');
 
       expect(type).to.equal(HTTP_UNPROCESSABLE_ENTITY);
-      expect(message).to.equal('"name" length must be at least 5 characters long');
+      expect(message).to.equal(NAME_LEN_REQUIRED);
     });
 
     it('3 - Should return the new product', async function () {
       sinon.stub(productsModel, 'createProduct').resolves([{ insertId: 10 }]);
-      sinon.stub(productsModel, 'getProductById').resolves(createdProduct);
+      sinon.stub(productsModel, 'getProductById').resolves(createdProductWithId);
 
       const { type, message } = await productsService.createProduct(newProduct);
 
       expect(type).to.equal(null);
-      expect(message).to.deep.equal(createdProduct);
+      expect(message).to.deep.equal(createdProductWithId);
     });
   });
 
@@ -81,14 +83,14 @@ describe('Unit tests (Service) - Products', function () {
       const { type, message } = await productsService.updateProduct(1, {});
 
       expect(type).to.equal(HTTP_BAD_REQUEST);
-      expect(message).to.equal('"name" is required');
+      expect(message).to.equal(NAME_REQUIRED);
     });
 
     it('3 - Should throw an error if the new name has less than 5 characters', async function () {
       const { type, message } = await productsService.updateProduct(1, invalidNameLen);
 
       expect(type).to.equal(HTTP_UNPROCESSABLE_ENTITY);
-      expect(message).to.equal('"name" length must be at least 5 characters long');
+      expect(message).to.equal(NAME_LEN_REQUIRED);
     });
 
     it('4 - Should return the updated product info', async function () {
@@ -131,12 +133,12 @@ describe('Unit tests (Service) - Products', function () {
     });
     
     it('2 - Should list the matching products when searching by query', async function () {
-      sinon.stub(productsModel, 'getProductByName').resolves(queryInput);
+      sinon.stub(productsModel, 'getProductByName').resolves(queryResult);
 
-      const { type, message } = await productsService.getProductByName('mar');
+      const { type, message } = await productsService.getProductByName(queryInput);
 
       expect(type).to.equal(null);
-      expect(message).to.equal(queryInput);
+      expect(message).to.equal(queryResult);
     });
   });
 });

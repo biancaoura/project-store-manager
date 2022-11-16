@@ -4,7 +4,7 @@ const { afterEach } = require('mocha');
 
 const connection = require('../../../src/models/database/connection');
 const { productsModel } = require('../../../src/models');
-const { allProducts, newProduct, newName, updatedProduct, queryInput } = require('./mocks/products.model.mock');
+const { allProducts, createdProduct, newName, updatedProduct, queryResult, queryInput } = require('./mocks/products.model.mock');
 
 describe('Unit tests (Model) - Products', function () {
 
@@ -29,7 +29,7 @@ describe('Unit tests (Model) - Products', function () {
   it('3 - Should create a new product and return the correct id', async function () {
     sinon.stub(connection, 'execute').resolves([{ insertId: 10 }]);
 
-    const result = await productsModel.createProduct(newProduct);
+    const result = await productsModel.createProduct(createdProduct);
 
     expect(result).to.equal(10);
   });
@@ -59,10 +59,10 @@ describe('Unit tests (Model) - Products', function () {
   });
 
   it('7 - Should list the matching products when searching by query', async function () {
-    sinon.stub(connection, 'execute').resolves([queryInput]);
+    sinon.stub(connection, 'execute').resolves([queryResult]);
 
-    const result = await productsModel.getProductByName('mar');
+    const result = await productsModel.getProductByName(queryInput);
 
-    expect(result).to.equal(queryInput);
+    expect(result).to.equal(queryResult);
   });
 });
