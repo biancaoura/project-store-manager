@@ -10,7 +10,7 @@ const { salesService } = require('../../../src/services');
 const { salesController } = require('../../../src/controllers');
 const { noProductSale } = require('../services/mocks/sales.service.mock');
 const { createdSale, validSaleInput, allSales, saleInfoById, updatedSale } = require('../models/mocks/sales.model.mock');
-const { HTTP_BAD_REQUEST, HTTP_CREATED, HTTP_OK_STATUS, HTTP_NOT_FOUND, HTTP_INTERNAL_SERVER_ERROR, HTTP_NO_CONTENT } = require('../../../src/utils/httpStatus');
+const httpStatus = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Sale not found';
 const UNKNOWN_MESSAGE = 'Unknown database \'db\'';
@@ -33,14 +33,14 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.getAllSales(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.status).to.have.been.calledWith(httpStatus.OK);
       expect(res.json).to.have.been.calledWith(allSales);
     });
 
     it('2 - Should return an error message if there\'s a server error', async function () {
       sinon
         .stub(salesService, 'getAllSales')
-        .returns({ type: HTTP_INTERNAL_SERVER_ERROR, message: UNKNOWN_MESSAGE });
+        .returns({ type: httpStatus.INTERNAL_SERVER_ERROR, message: UNKNOWN_MESSAGE });
 
       const res = {};
       const req = {};
@@ -50,7 +50,7 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.getAllSales(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_INTERNAL_SERVER_ERROR);
+      expect(res.status).to.have.been.calledWith(httpStatus.INTERNAL_SERVER_ERROR);
       expect(res.json).to.have.been.calledWith({ message: UNKNOWN_MESSAGE })
     });
   });
@@ -69,14 +69,14 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.getSaleById(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.status).to.have.been.calledWith(httpStatus.OK);
       expect(res.json).to.have.been.calledWith(saleInfoById);
     });
 
     it('2 - Should return status 404 if id is not found', async function () {
       sinon
         .stub(salesService, 'getSaleById')
-        .returns({ type: HTTP_NOT_FOUND, message: NOT_FOUND });
+        .returns({ type: httpStatus.NOT_FOUND, message: NOT_FOUND });
       
       const res = {};
       const req = { params: { id: 10 } };
@@ -86,7 +86,7 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.getSaleById(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
+      expect(res.status).to.have.been.calledWith(httpStatus.NOT_FOUND);
       expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
     });
   });
@@ -105,14 +105,14 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.createSale(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_CREATED);
+      expect(res.status).to.have.been.calledWith(httpStatus.CREATED);
       expect(res.json).to.have.been.calledWith(createdSale);
     });
 
     it('2 - Should throw an error if no product id is given', async function () {
       sinon
         .stub(salesService, 'createSale')
-        .returns({ type: HTTP_BAD_REQUEST, message: '"productId" is required' });
+        .returns({ type: httpStatus.BAD_REQUEST, message: '"productId" is required' });
 
       const res = {};
       const req = { body: noProductSale };
@@ -122,7 +122,7 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.createSale(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_BAD_REQUEST);
+      expect(res.status).to.have.been.calledWith(httpStatus.BAD_REQUEST);
       expect(res.json).to.have.been.calledWith({ message: '"productId" is required' });
     });
   });
@@ -144,14 +144,14 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.updateSale(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.status).to.have.been.calledWith(httpStatus.OK);
       expect(res.json).to.have.been.calledWith(updatedSale);
     });
 
     it('2 - Should throw an error if sale id doesn\'t exist', async function () {
       sinon
         .stub(salesService, 'updateSale')
-        .returns({ type: HTTP_NOT_FOUND, message: NOT_FOUND });
+        .returns({ type: httpStatus.NOT_FOUND, message: NOT_FOUND });
 
       const res = {};
       const req = {
@@ -164,7 +164,7 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.updateSale(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
+      expect(res.status).to.have.been.calledWith(httpStatus.NOT_FOUND);
       expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
     });
   });
@@ -183,14 +183,14 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.deleteSale(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_NO_CONTENT);
+      expect(res.status).to.have.been.calledWith(httpStatus.NO_CONTENT);
       expect(res.end).to.have.been.calledWith();
     });
 
     it('2 - Should throw an error if product doesn\'t exist', async function () {
       sinon
         .stub(salesService, 'deleteSale')
-        .returns({ type: HTTP_NOT_FOUND, message: NOT_FOUND });
+        .returns({ type: httpStatus.NOT_FOUND, message: NOT_FOUND });
 
       const res = {};
       const req = { params: { id: 10 } };
@@ -200,7 +200,7 @@ describe('Unit tests (Controller) - Sales', function () {
 
       await salesController.deleteSale(req, res);
 
-      expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
+      expect(res.status).to.have.been.calledWith(httpStatus.NOT_FOUND);
       expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
     });
   });

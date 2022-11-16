@@ -7,7 +7,7 @@ const { productsService } = require('../../../src/services');
 const { allProducts, updatedProduct, queryResult, newProduct, queryInput } = require('../models/mocks/products.model.mock');
 const { validNewName, invalidNameLen } = require('./mocks/products.service.mock');
 const { createdProductWithId } = require('../controllers/mocks/products.controller.mock');
-const { HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY, HTTP_NOT_FOUND } = require('../../../src/utils/httpStatus');
+const httpStatus = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Product not found';
 const NAME_REQUIRED = '"name" is required';
@@ -47,14 +47,14 @@ describe('Unit tests (Service) - Products', function () {
     it('1 - Should throw an error if no name is given', async function () {
       const { type, message } = await productsService.createProduct();
 
-      expect(type).to.equal(HTTP_BAD_REQUEST);
+      expect(type).to.equal(httpStatus.BAD_REQUEST);
       expect(message).to.equal(NAME_REQUIRED);
     });
 
     it('2 - Should throw an error if the name has less than 5 characters', async function () {
       const { type, message } = await productsService.createProduct('a');
 
-      expect(type).to.equal(HTTP_UNPROCESSABLE_ENTITY);
+      expect(type).to.equal(httpStatus.UNPROCESSABLE_ENTITY);
       expect(message).to.equal(NAME_LEN_REQUIRED);
     });
 
@@ -75,21 +75,21 @@ describe('Unit tests (Service) - Products', function () {
 
       const { type, message } = await productsService.updateProduct(10, validNewName);
 
-      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(type).to.equal(httpStatus.NOT_FOUND);
       expect(message).to.equal(NOT_FOUND);
     });
 
     it('2 - Should throw an error if no new name is given', async function () {
       const { type, message } = await productsService.updateProduct(1, {});
 
-      expect(type).to.equal(HTTP_BAD_REQUEST);
+      expect(type).to.equal(httpStatus.BAD_REQUEST);
       expect(message).to.equal(NAME_REQUIRED);
     });
 
     it('3 - Should throw an error if the new name has less than 5 characters', async function () {
       const { type, message } = await productsService.updateProduct(1, invalidNameLen);
 
-      expect(type).to.equal(HTTP_UNPROCESSABLE_ENTITY);
+      expect(type).to.equal(httpStatus.UNPROCESSABLE_ENTITY);
       expect(message).to.equal(NAME_LEN_REQUIRED);
     });
 
@@ -117,7 +117,7 @@ describe('Unit tests (Service) - Products', function () {
 
       const { type, message } = await productsService.deleteProduct(10);
 
-      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(type).to.equal(httpStatus.NOT_FOUND);
       expect(message).to.equal(NOT_FOUND);
     });
   });

@@ -1,4 +1,4 @@
-const { HTTP_NOT_FOUND } = require('../../utils/httpStatus');
+const httpStatus = require('../../utils/httpStatus');
 const { productsModel } = require('../../models');
 
 const doesProductExist = async (sale) => {
@@ -7,7 +7,7 @@ const doesProductExist = async (sale) => {
 
   const validProduct = promise.every((item) => item);
 
-  if (!validProduct) return { type: HTTP_NOT_FOUND, message: 'Product not found' };
+  if (!validProduct) return { type: httpStatus.NOT_FOUND, message: 'Product not found' };
   return false;
 };
 

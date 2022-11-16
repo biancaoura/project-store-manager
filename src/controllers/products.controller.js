@@ -1,13 +1,13 @@
 const { productsService } = require('../services');
 
-const { HTTP_OK_STATUS, HTTP_CREATED, HTTP_NO_CONTENT } = require('../utils/httpStatus');
+const httpStatus = require('../utils/httpStatus');
 
 const getAllProducts = async (_req, res) => {
   const { type, message } = await productsService.getAllProducts();
 
   if (type) return res.status(type).json({ message });
 
-  return res.status(HTTP_OK_STATUS).json(message);
+  return res.status(httpStatus.OK).json(message);
 };
 
 const getProductById = async (req, res) => {
@@ -16,7 +16,7 @@ const getProductById = async (req, res) => {
 
   if (type) return res.status(type).json({ message });
 
-  return res.status(HTTP_OK_STATUS).json(message);
+  return res.status(httpStatus.OK).json(message);
 };
 
 const getProductByName = async (req, res) => {
@@ -25,7 +25,7 @@ const getProductByName = async (req, res) => {
 
   if (type) return res.status(type).json({ message });
 
-  return res.status(HTTP_OK_STATUS).json(message);
+  return res.status(httpStatus.OK).json(message);
 };
 
 const createProduct = async (req, res) => {
@@ -34,7 +34,7 @@ const createProduct = async (req, res) => {
   
   if (type) return res.status(type).json({ message });
 
-  return res.status(HTTP_CREATED).json(message);
+  return res.status(httpStatus.CREATED).json(message);
 };
 
 const updateProduct = async (req, res) => {
@@ -45,7 +45,7 @@ const updateProduct = async (req, res) => {
 
   if (type) return res.status(type).json({ message });
 
-  return res.status(HTTP_OK_STATUS).json(message);
+  return res.status(httpStatus.OK).json(message);
 };
 
 const deleteProduct = async (req, res) => {
@@ -54,7 +54,7 @@ const deleteProduct = async (req, res) => {
 
   if (type) return res.status(type).json({ message });
 
-  return res.status(HTTP_NO_CONTENT).end();
+  return res.status(httpStatus.NO_CONTENT).end();
 };
 
 module.exports = {

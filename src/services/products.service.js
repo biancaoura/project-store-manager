@@ -5,7 +5,7 @@ const {
   doesProductExist,
 } = require('./validations/products.validation');
 
-const { HTTP_NOT_FOUND } = require('../utils/httpStatus');
+const httpStatus = require('../utils/httpStatus');
 
 const getAllProducts = async () => {
   const allProducts = await productsModel.getAllProducts();
@@ -16,7 +16,7 @@ const getAllProducts = async () => {
 const getProductById = async (productId) => {
   const product = await productsModel.getProductById(productId);
 
-  if (!product) return { type: HTTP_NOT_FOUND, message: 'Product not found' };
+  if (!product) return { type: httpStatus.NOT_FOUND, message: 'Product not found' };
 
   return { type: null, message: product };
 };

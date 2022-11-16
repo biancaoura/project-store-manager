@@ -6,7 +6,7 @@ const { salesModel } = require('../../../src/models');
 const { salesService } = require('../../../src/services');
 const { invalidProductIdSale, noProductSale, noQuantitySale, invalidNegativeQuantity, invalidSaleId } = require('./mocks/sales.service.mock');
 const { validSaleInput, createdSale, allSales, saleInfoById, updatedSale } = require('../models/mocks/sales.model.mock');
-const { HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY } = require('../../../src/utils/httpStatus');
+const httpStatus = require('../../../src/utils/httpStatus');
 
 const SALE_NOT_FOUND = 'Sale not found';
 const PRODUCT_NOT_FOUND = 'Product not found';
@@ -46,28 +46,28 @@ describe('Unit tests (Service) - Sales', function () {
     it('1 - Should throw an error if product id doesn\'t exist', async function () {
       const { type, message } = await salesService.createSale(invalidProductIdSale);
 
-      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(type).to.equal(httpStatus.NOT_FOUND);
       expect(message).to.equal(PRODUCT_NOT_FOUND);
     });
 
     it('2 - Should throw an error if product is not specified', async function () {
       const { type, message } = await salesService.createSale(noProductSale);
 
-      expect(type).to.equal(HTTP_BAD_REQUEST);
+      expect(type).to.equal(httpStatus.BAD_REQUEST);
       expect(message).to.equal('"productId" is required');
     });
 
     it('3 - Should throw an error if quantity is not specified', async function () {
       const { type, message } = await salesService.createSale(noQuantitySale);
 
-      expect(type).to.equal(HTTP_BAD_REQUEST);
+      expect(type).to.equal(httpStatus.BAD_REQUEST);
       expect(message).to.equal(QUANTITY_REQUIRED);
     });
 
     it('4 - Should throw an error if quantity is zero or negative', async function () {
       const { type, message } = await salesService.createSale(invalidNegativeQuantity);
 
-      expect(type).to.equal(HTTP_UNPROCESSABLE_ENTITY);
+      expect(type).to.equal(httpStatus.UNPROCESSABLE_ENTITY);
       expect(message).to.equal('"quantity" must be greater than or equal to 1');
     });
 
@@ -87,21 +87,21 @@ describe('Unit tests (Service) - Sales', function () {
 
       const { type, message } = await salesService.updateSale(invalidSaleId, validSaleInput);
 
-      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(type).to.equal(httpStatus.NOT_FOUND);
       expect(message).to.deep.equal(SALE_NOT_FOUND);
     });
     
     it('2 - Should throw an error if product id doesn\'t exist', async function () {
       const { type, message } = await salesService.updateSale(1, invalidProductIdSale);
 
-      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(type).to.equal(httpStatus.NOT_FOUND);
       expect(message).to.deep.equal(PRODUCT_NOT_FOUND);
     });
 
     it('3 - Should throw an error if no quantity is specified', async function () {
       const { type, message } = await salesService.updateSale(1, noQuantitySale);
 
-      expect(type).to.equal(HTTP_BAD_REQUEST);
+      expect(type).to.equal(httpStatus.BAD_REQUEST);
       expect(message).to.deep.equal(QUANTITY_REQUIRED);
     });
 
@@ -130,7 +130,7 @@ describe('Unit tests (Service) - Sales', function () {
 
       const { type, message } = await salesService.deleteSale(10);
 
-      expect(type).to.equal(HTTP_NOT_FOUND);
+      expect(type).to.equal(httpStatus.NOT_FOUND);
       expect(message).to.equal(SALE_NOT_FOUND);
     });
   });
