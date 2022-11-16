@@ -18,7 +18,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#acknowledgments">Additional Info</a></li>
+    <li><a href="#additiona-info">Additional Info</a></li>
   </ol>
 </details>
 
@@ -29,7 +29,7 @@ Dropshipping store management API, to create, read, update and delete products a
 
 > This is a project developed to better understand how the MSC architecture works.
 
-### Build With
+### Built With
 
 ![JavaScript][JavaScript.io]
 
