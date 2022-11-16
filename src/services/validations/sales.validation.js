@@ -6,12 +6,7 @@ const { doesProductExist } = require('./sales_products.validation');
 const validateSaleInput = ({ productId, quantity }) => {
   const { error } = createSaleSchema.validate({ productId, quantity });
 
-  if (!productId || !quantity) {
-    const type = error.message.includes('required')
-      ? httpStatus.BAD_REQUEST
-      : httpStatus.UNPROCESSABLE_ENTITY;
-    return { type, message: error.message };
-  }
+  if (!productId || !quantity) return { type: httpStatus.BAD_REQUEST, message: error.message };
 
   if (error) return { type: httpStatus.UNPROCESSABLE_ENTITY, message: error.message };
 
