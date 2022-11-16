@@ -18,13 +18,14 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#additiona-info">Additional Info</a></li>
+    <li><a href="#additional-info">Additional Info</a></li>
   </ol>
 </details>
 
 ## About The Project
 
 RESTful API using Model-Service-Controller architecture (MSC).
+
 Dropshipping store management API, to create, read, update and delete products and sales.
 
 > This is a project developed to better understand how the MSC architecture works.
