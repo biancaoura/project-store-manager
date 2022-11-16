@@ -4,10 +4,10 @@ const { afterEach } = require('mocha');
 
 const { productsModel } = require('../../../src/models');
 const { productsService } = require('../../../src/services');
-const { allProducts, updatedProduct } = require('../models/mocks/products.model.mock');
+const { allProducts, updatedProduct, queryInput } = require('../models/mocks/products.model.mock');
 const { validNewName, invalidNameLen, newProduct } = require('./mocks/products.service.mock');
 const { createdProduct } = require('../controllers/mocks/products.controller.mock');
-const { HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY, HTTP_NOT_FOUND } = require('../../../src/utils/httpStatus');
+const { HTTP_BAD_REQUEST, HTTP_UNPROCESSABLE_ENTITY, HTTP_NOT_FOUND, HTTP_OK_STATUS } = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Product not found';
 
@@ -117,6 +117,26 @@ describe('Unit tests (Service) - Products', function () {
 
       expect(type).to.equal(HTTP_NOT_FOUND);
       expect(message).to.equal(NOT_FOUND);
+    });
+  });
+
+  describe('Searching products', function () {
+    it('1 - Should list all products when searching with no query', async function () {
+      sinon.stub(productsModel, 'getProductByName').resolves(allProducts);
+
+      const { type, message } = await productsService.getProductByName();
+
+      expect(type).to.equal(null);
+      expect(message).to.deep.equal(allProducts);
+    });
+    
+    it('2 - Should list the matching products when searching by query', async function () {
+      sinon.stub(productsModel, 'getProductByName').resolves(queryInput);
+
+      const { type, message } = await productsService.getProductByName('mar');
+
+      expect(type).to.equal(null);
+      expect(message).to.equal(queryInput);
     });
   });
 });
