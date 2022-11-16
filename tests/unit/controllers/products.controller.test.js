@@ -8,7 +8,7 @@ chai.use(sinonChai);
 
 const { productsService } = require('../../../src/services');
 const { productsController } = require('../../../src/controllers');
-const { allProducts, newProduct, updatedProduct } = require('../models/mocks/products.model.mock');
+const { allProducts, newProduct, updatedProduct, queryInput } = require('../models/mocks/products.model.mock');
 const { createdProduct } = require('./mocks/products.controller.mock');
 const { HTTP_OK_STATUS, HTTP_INTERNAL_SERVER_ERROR, HTTP_NOT_FOUND, HTTP_BAD_REQUEST, HTTP_CREATED, HTTP_NO_CONTENT } = require('../../../src/utils/httpStatus');
 
@@ -88,6 +88,59 @@ describe('Unit tests (Controller) - Products', function () {
 
       expect(res.status).to.have.been.calledWith(HTTP_NOT_FOUND);
       expect(res.json).to.have.been.calledWith({ message: NOT_FOUND });
+    });
+  });
+
+  describe('Testing getByName func', function () {
+    it('1 - Should list all products when searching with no query', async function () {
+      sinon
+        .stub(productsService, 'getProductByName')
+        .resolves({ type: null, message: allProducts });
+      
+      const res = {};
+      const req = { query: { q: '' } };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await productsController.getProductByName(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.json).to.have.been.calledWith(allProducts);
+    });
+
+    it('2 - Should list the matching products when searching by query', async function () {
+      sinon
+        .stub(productsService, 'getProductByName')
+        .resolves({ type: null, message: queryInput });
+
+      const res = {};
+      const req = { query: { q: 'mar' } };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+
+      await productsController.getProductByName(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
+      expect(res.json).to.have.been.calledWith(queryInput);
+    });
+
+    it('3 - Should return an error message if no product is found', async function () {
+      sinon
+        .stub(productsService, 'getProductByName')
+        .returns({ type: HTTP_INTERNAL_SERVER_ERROR, message: UNKNOWN_MESSAGE });
+
+      const res = {};
+      const req = { query: { q: 'mar' } };
+
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      
+      await productsController.getProductByName(req, res);
+
+      expect(res.status).to.have.been.calledWith(HTTP_INTERNAL_SERVER_ERROR);
+      expect(res.json).to.have.been.calledWith({ message: UNKNOWN_MESSAGE })
     });
   });
 
