@@ -19,7 +19,7 @@ const allSales = [
   },
 ];
 
-const salesProducts = [
+const saleInfoById = [
   {
     date: '2021-09-09T04:54:29.000Z',
     productId: 1,
@@ -32,7 +32,7 @@ const salesProducts = [
   }
 ];
 
-const validSale = [
+const validSaleInput = [
   {
     productId: 1,
     quantity: 1,
@@ -73,8 +73,8 @@ const createdSale = {
 
 module.exports = {
   allSales,
-  salesProducts,
-  validSale,
+  saleInfoById,
+  validSaleInput,
   updatedSale,
   createdSale,
 };

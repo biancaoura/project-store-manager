@@ -8,8 +8,8 @@ chai.use(sinonChai);
 
 const { salesService } = require('../../../src/services');
 const { salesController } = require('../../../src/controllers');
-const { invalidProductSale } = require('../services/mocks/sales.service.mock');
-const { createdSale, validSale, allSales, salesProducts, updatedSale } = require('../models/mocks/sales.model.mock');
+const { noProductSale } = require('../services/mocks/sales.service.mock');
+const { createdSale, validSaleInput, allSales, saleInfoById, updatedSale } = require('../models/mocks/sales.model.mock');
 const { HTTP_BAD_REQUEST, HTTP_CREATED, HTTP_OK_STATUS, HTTP_NOT_FOUND, HTTP_INTERNAL_SERVER_ERROR, HTTP_NO_CONTENT } = require('../../../src/utils/httpStatus');
 
 const NOT_FOUND = 'Sale not found';
@@ -59,7 +59,7 @@ describe('Unit tests (Controller) - Sales', function () {
     it('1 - Should get matching sale when searching by id', async function () {
       sinon
         .stub(salesService, 'getSaleById')
-        .returns({ type: null, message: salesProducts });
+        .returns({ type: null, message: saleInfoById });
       
       const res = {};
       const req = { params: { id: 1 } };
@@ -70,7 +70,7 @@ describe('Unit tests (Controller) - Sales', function () {
       await salesController.getSaleById(req, res);
 
       expect(res.status).to.have.been.calledWith(HTTP_OK_STATUS);
-      expect(res.json).to.have.been.calledWith(salesProducts);
+      expect(res.json).to.have.been.calledWith(saleInfoById);
     });
 
     it('2 - Should return status 404 if id is not found', async function () {
@@ -98,7 +98,7 @@ describe('Unit tests (Controller) - Sales', function () {
         .resolves({ type: null, message: createdSale });
       
       const res = {};
-      const req = { body: validSale };
+      const req = { body: validSaleInput };
       
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
@@ -115,7 +115,7 @@ describe('Unit tests (Controller) - Sales', function () {
         .returns({ type: HTTP_BAD_REQUEST, message: '"productId" is required' });
 
       const res = {};
-      const req = { body: invalidProductSale };
+      const req = { body: noProductSale };
 
       res.status = sinon.stub().returns(res);
       res.json = sinon.stub().returns();
@@ -136,7 +136,7 @@ describe('Unit tests (Controller) - Sales', function () {
       const res = {};
       const req = {
         params: { id: 1 },
-        body: validSale,
+        body: validSaleInput,
       };
 
       res.status = sinon.stub().returns(res);
@@ -156,7 +156,7 @@ describe('Unit tests (Controller) - Sales', function () {
       const res = {};
       const req = {
         params: { id: 10 },
-        body: validSale,
+        body: validSaleInput,
       };
 
       res.status = sinon.stub().returns(res);

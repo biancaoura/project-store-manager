@@ -1,4 +1,4 @@
-const invalidProductSale = [{
+const noProductSale = [{
   quantity: 10,
 }];
 
@@ -7,7 +7,7 @@ const invalidProductIdSale = [{
   quantity: 10,
 }];
 
-const invalidQuantitySale = [{
+const noQuantitySale = [{
   productId: 1,
 }];
 
@@ -19,9 +19,9 @@ const invalidNegativeQuantity = [{
 const invalidSaleId = 10;
 
 module.exports = {
-  invalidProductSale,
+  noProductSale,
   invalidProductIdSale,
-  invalidQuantitySale,
+  noQuantitySale,
   invalidNegativeQuantity,
   invalidSaleId,
 };
