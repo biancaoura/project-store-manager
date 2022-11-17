@@ -9,7 +9,7 @@ const allProducts = [
   },
   {
     id: 3,
-    name: 'Capitain America\'s Shield',
+    name: 'Captain America\'s Shield',
   },
 ];
 
